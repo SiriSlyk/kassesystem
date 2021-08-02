@@ -2,7 +2,7 @@ import tkinter
 from backend import *
 
 items = ["Ienhet", "Dndpfsd", "Nflpwnf"]
-
+db = Database()
 
 rodListe = ["Funksjoner", "Tilbake", "Tilbake", "Tilbake"]
 gronnListe = ["Endre antall", "Artikkel", "Kort", "Linjeretur"]
@@ -59,11 +59,13 @@ class GUI:
         tkinter.mainloop()
 
     def textfelt(self):
+        self.artikkelStringvar = tkinter.StringVar()
+        self.artikkelStringvar.set("")
         self.text = tkinter.Text(self.showItemsFrame, height=15, pady=0)
         self.text.grid(column=0, row=0)
         self.text.config(state=tkinter.DISABLED)
 
-        self.sumLabel = tkinter.Label(self.showItemsFrame, text="5 artikkler", fg="#fff", bg="#111")
+        self.sumLabel = tkinter.Label(self.showItemsFrame, textvariable=self.artikkelStringvar, fg="#fff", bg="#111")
         self.sumLabel.grid(column=0, row=1, sticky="NW")
 
         self.sumLabel = tkinter.Label(self.showItemsFrame, text="Sum: 300", fg="#fff", bg="#111")
@@ -205,10 +207,17 @@ class GUI:
         self.entry.delete(0, tkinter.END)
         if artikkel != "":
             self.text.config(state=tkinter.NORMAL)
-            self.text.insert(tkinter.END, artikkel+"\n")
+            infoFraDB = db.printToScreen(artikkel)
+            self.text.insert(tkinter.END, infoFraDB+"\n")
+
             self.text.config(state=tkinter.DISABLED)
             self.antallLinjer += 1
-            print(self.antallLinjer)
+            if self.antallLinjer != 1:
+                self.artikkelStringvar.set(f"  {self.antallLinjer} artikel")
+
+            else:
+                self.artikkelStringvar.set(f"  {self.antallLinjer} artikler")
+
 
     def slett(self):
         self.entry.delete(0, tkinter.END)
