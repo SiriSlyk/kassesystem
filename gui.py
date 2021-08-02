@@ -4,13 +4,13 @@ from backend import *
 items = ["Ienhet", "Dndpfsd", "Nflpwnf"]
 
 
-rodListe = ["Funksjoner", "Tilbake"]
-gronnListe = ["Endre antall", "Artikkel"]
-gulListe = ["Søk artikkel", "Flere funksjoner"]
-blaListe = ["Prisforespørsel", "Linjerabatt"]
-orangeListe = ["Fjern artikkel", "E-tjenester"]
-lillaListe = ["Lojalitet", "Kvitteringsfunksjoner"]
-hvitListe = ["Betaling", "Velikehold"]
+rodListe = ["Funksjoner", "Tilbake", "Tilbake", "Tilbake"]
+gronnListe = ["Endre antall", "Artikkel", "Kort", "Linjeretur"]
+gulListe = ["Søk artikkel", "Flere funksjoner", "Kontanter", ""]
+blaListe = ["Prisforespørsel", "Linjerabatt", "Rabatter", ""]
+orangeListe = ["Fjern artikkel", "E-tjenester", "Andre betalingsmåter", ""]
+lillaListe = ["Lojalitet", "Kvitteringsfunksjoner", "", ""]
+hvitListe = ["Betaling", "Velikehold", "", ""]
 
 
 
@@ -19,15 +19,17 @@ class GUI:
         self.hovedvindu = tkinter.Tk()
         self.hovedvindu.title("Kassesystem")
         #self.hovedvindu.attributes('-fullscreen', True)  # FULLSCREEN
+        self.hovedvindu.geometry("")
 
         self.HEIGHT = self.hovedvindu.winfo_screenwidth()
+        self.antallLinjer = 0
 
         # Frames
-        self.showItemsFrame = tkinter.Frame(self.hovedvindu)
+        self.showItemsFrame = tkinter.Frame(self.hovedvindu, background="#111")
         self.showItemsFrame.grid(column=0, row=0)
 
         self.angiFrame = tkinter.Frame(self.hovedvindu)
-        self.angiFrame.grid(column=0, row=1)
+        self.angiFrame.grid(column=0, row=1, sticky="n")
 
         self.funcFrame = tkinter.Frame(self.hovedvindu, background="#31B4D8")
         self.funcFrame.grid(column=1, row=0, rowspan=3)  # , sticky="e")
@@ -57,22 +59,29 @@ class GUI:
         tkinter.mainloop()
 
     def textfelt(self):
-        self.text = tkinter.Text(self.showItemsFrame)
+        self.text = tkinter.Text(self.showItemsFrame, height=15, pady=0)
         self.text.grid(column=0, row=0)
         self.text.config(state=tkinter.DISABLED)
 
+        self.sumLabel = tkinter.Label(self.showItemsFrame, text="5 artikkler", fg="#fff", bg="#111")
+        self.sumLabel.grid(column=0, row=1, sticky="NW")
+
+        self.sumLabel = tkinter.Label(self.showItemsFrame, text="Sum: 300", fg="#fff", bg="#111")
+        self.sumLabel.grid(column=0, row=1, sticky="NE")
+
+
     def angifelt(self):
         self.label = tkinter.Label(self.angiFrame, text="Angi/skann artikkel:")
-        self.label.grid(column=0, row=0)
+        self.label.grid(column=0, row=0, sticky="NW")
 
         self.entry = tkinter.Entry(self.angiFrame, width=100)
         self.entry.grid(column=0, row=1)
 
     def funcfelt(self):
         x_margin = 10
-        y_margin = self.HEIGHT / 150
+        y_margin = 5#self.HEIGHT / 150
         x_padding = 100
-        y_padding = 25
+        y_padding = 25-5
         borderWidth = 5
 
 
@@ -101,7 +110,7 @@ class GUI:
             .grid(column=0, row=0, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
         self.endre_antallButton = tkinter.Button(self.funcFrame, textvariable=self.gronnStringvar, width=2, command=self.gjorIngenting, background="green", borderwidth=borderWidth) \
             .grid(column=0, row=1, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
-        self.sok_artikkelButton = tkinter.Button(self.funcFrame, textvariable=self.gulStringvar, width=2, command=self.gjorIngenting, background="#EEF422", borderwidth=borderWidth) \
+        self.sok_artikkelButton = tkinter.Button(self.funcFrame, textvariable=self.gulStringvar, width=2, command=self.gulFunk, background="#EEF422", borderwidth=borderWidth) \
             .grid(column=0, row=2, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
         self.prisforesporselButton = tkinter.Button(self.funcFrame, textvariable=self.blaStringvar, width=2, command=self.gjorIngenting, background="#00BFF3", borderwidth=borderWidth) \
             .grid(column=0, row=3, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
@@ -109,7 +118,7 @@ class GUI:
             .grid(column=0, row=4, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
         self.lojalitetButton = tkinter.Button(self.funcFrame, textvariable=self.lillaStringvar, width=2, command=self.gjorIngenting, background="#B135D0", borderwidth=borderWidth) \
             .grid(column=0, row=5, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
-        self.velikeholdButton = tkinter.Button(self.funcFrame, textvariable=self.hvitStringvar, width=2, command=self.gjorIngenting, background="#ffffff", borderwidth=borderWidth) \
+        self.velikeholdButton = tkinter.Button(self.funcFrame, textvariable=self.hvitStringvar, width=2, command=self.hvitFunk, background="#ffffff", borderwidth=borderWidth) \
             .grid(column=0, row=7, ipadx=x_padding, ipady=y_padding, pady=y_margin, padx=x_margin)
 
     def numfelt(self):
@@ -198,6 +207,8 @@ class GUI:
             self.text.config(state=tkinter.NORMAL)
             self.text.insert(tkinter.END, artikkel+"\n")
             self.text.config(state=tkinter.DISABLED)
+            self.antallLinjer += 1
+            print(self.antallLinjer)
 
     def slett(self):
         self.entry.delete(0, tkinter.END)
@@ -207,10 +218,26 @@ class GUI:
 
     def rodFunk(self):
         if self.state == 0:
-            self.state = 1
-        elif self.state == 1:
-            self.state = 0
+            self.state = 1 # Funksjoner
+        else:
+            self.state = 0 # Tilbake til start
 
+
+        self.endreFunksjonsKnapp()
+
+    def gulFunk(self):
+        if self.state == 1:
+            self.state = 3
+
+        self.endreFunksjonsKnapp()
+
+    def hvitFunk(self):
+        if self.state == 0:
+            self.state = 2 # Betalinger
+
+        self.endreFunksjonsKnapp()
+
+    def endreFunksjonsKnapp(self):
         self.rodStringvar.set("F1\n" + rodListe[self.state])
         self.gronnStringvar.set("F2\n" + gronnListe[self.state])
         self.gulStringvar.set("F3\n" + gulListe[self.state])
@@ -218,7 +245,6 @@ class GUI:
         self.orangeStringvar.set("F5\n" + orangeListe[self.state])
         self.lillaStringvar.set("F6\n" + lillaListe[self.state])
         self.hvitStringvar.set("F7\n" + hvitListe[self.state])
-
 
 
 if __name__ == "__main__":
