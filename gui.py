@@ -41,7 +41,7 @@ class GUI:
         self.keysFrame.grid(column=0, row=2)
 
         self.state = 0
-
+        self.artiklerIKurv = []
 
 
 
@@ -68,8 +68,11 @@ class GUI:
         self.sumLabel = tkinter.Label(self.showItemsFrame, textvariable=self.artikkelStringvar, fg="#fff", bg="#111")
         self.sumLabel.grid(column=0, row=1, sticky="NW")
 
-        self.sumLabel = tkinter.Label(self.showItemsFrame, text="Sum: 300", fg="#fff", bg="#111")
-        self.sumLabel.grid(column=0, row=1, sticky="NE")
+        self.sumStringvar = tkinter.StringVar()
+
+
+        #self.sumLabel = tkinter.Label(self.showItemsFrame, text="Sum: 300", fg="#fff", bg="#111")
+        #self.sumLabel.grid(column=0, row=1, sticky="NE")
 
 
     def angifelt(self):
@@ -181,7 +184,7 @@ class GUI:
         self.numkommaButton = tkinter.Button(self.numFrame, text=".", width=2, command=lambda: self.numpad("."), background="#222", fg="#fff").grid(
             column=3, row=row, ipadx=20, ipady=10, padx=5, pady=5)
 
-        self.sumButton = tkinter.Button(self.actionFrame, text="Sum", width=2, command=self.gjorIngenting)\
+        self.sumButton = tkinter.Button(self.actionFrame, text="Sum", width=2, command=self.sumFunk)\
             .grid(column=4, row=0, columnspan=1, ipadx=rectangle_padding, ipady=rectangle_padding, padx=tupple_x_margin, pady=y_margin)
         self.enterButton = tkinter.Button(self.actionFrame, text="Enter", width=2, command=self.enterFunk)\
             .grid(column=4, row=2, columnspan=1, ipadx=rectangle_padding, ipady=rectangle_padding, padx=tupple_x_margin, pady=y_margin)
@@ -208,11 +211,12 @@ class GUI:
         if artikkel != "":
             self.text.config(state=tkinter.NORMAL)
             infoFraDB = db.printToScreen(artikkel)
+            self.artiklerIKurv.append(artikkel)
             self.text.insert(tkinter.END, infoFraDB+"\n")
 
             self.text.config(state=tkinter.DISABLED)
             self.antallLinjer += 1
-            if self.antallLinjer != 1:
+            if self.antallLinjer == 1:
                 self.artikkelStringvar.set(f"  {self.antallLinjer} artikel")
 
             else:
@@ -254,6 +258,10 @@ class GUI:
         self.orangeStringvar.set("F5\n" + orangeListe[self.state])
         self.lillaStringvar.set("F6\n" + lillaListe[self.state])
         self.hvitStringvar.set("F7\n" + hvitListe[self.state])
+
+    def sumFunk(self):
+        for item in self.artiklerIKurv:
+            print(item[1])
 
 
 if __name__ == "__main__":
