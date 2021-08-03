@@ -43,6 +43,11 @@ class GUI:
         self.state = 0
         self.artiklerIKurv = []
 
+        self.sumStringvar = tkinter.StringVar()
+        self.sumStringvar.set("")
+
+        #EVENTS
+        self.hovedvindu.bind('<Return>', self.enterFunk)
 
 
 
@@ -65,14 +70,15 @@ class GUI:
         self.text.grid(column=0, row=0)
         self.text.config(state=tkinter.DISABLED)
 
+
         self.sumLabel = tkinter.Label(self.showItemsFrame, textvariable=self.artikkelStringvar, fg="#fff", bg="#111")
         self.sumLabel.grid(column=0, row=1, sticky="NW")
 
-        self.sumStringvar = tkinter.StringVar()
 
 
-        #self.sumLabel = tkinter.Label(self.showItemsFrame, text="Sum: 300", fg="#fff", bg="#111")
-        #self.sumLabel.grid(column=0, row=1, sticky="NE")
+
+        self.sumLabel = tkinter.Label(self.showItemsFrame, textvariable=self.sumStringvar, fg="#fff", bg="#111")
+        self.sumLabel.grid(column=0, row=1, sticky="NE")
 
 
     def angifelt(self):
@@ -205,7 +211,7 @@ class GUI:
     def numpad(self, num):
         self.entry.insert(tkinter.END, num)
 
-    def enterFunk(self):
+    def enterFunk(self, hendelse):
         artikkel = self.entry.get()
         self.entry.delete(0, tkinter.END)
         if artikkel != "":
@@ -260,8 +266,12 @@ class GUI:
         self.hvitStringvar.set("F7\n" + hvitListe[self.state])
 
     def sumFunk(self):
+        price = 0
         for item in self.artiklerIKurv:
-            print(item[1])
+            price += db.returnPrice(item)
+        self.sumStringvar.set(f"Sum {price}kr")
+
+
 
 
 if __name__ == "__main__":
