@@ -14,8 +14,9 @@ hvitListe = ["Betaling", "Velikehold", "", ""]
 
 
 
-class GUI:
-    def __init__(self):
+class GuiKasse:
+    def __init__(self, userId=0):
+        print(userId, "s6k")
         self.hovedvindu = tkinter.Tk()
         self.hovedvindu.title("Kassesystem")
         #self.hovedvindu.attributes('-fullscreen', True)  # FULLSCREEN
@@ -273,6 +274,34 @@ class GUI:
 
 
 
+class Login: #INGEN LOGIKK MED BRUKENAVN OG PASSORD SKAL LAGE DATABASE!!!!!
+    def __init__(self):
+        self.frame = tkinter.Tk()
+
+        self.title_label = tkinter.Label(self.frame, text="Login").grid(column=0, row=0, columnspan=2)
+
+        self.username_label = tkinter.Label(self.frame, text="Username: ").grid(column=0, row=1)
+        self.password_label = tkinter.Label(self.frame, text="Password: ").grid(column=0, row=2)
+        self.username = tkinter.Entry(self.frame).grid(column=1, row=1)
+        self.password = tkinter.Entry(self.frame, show="*").grid(column=1, row=2)
+        self.button = tkinter.Button(self.frame, text="Login", command=self.loginFunc).grid(column=0, row=3, columnspan=2)
+
+
+        #EVENTS
+        self.frame.bind('<Return>', self.loginFunc)
+
+        tkinter.mainloop()
+
+
+
+
+    def loginFunc(self, hendelse):
+        self.frame.destroy()
+        GuiKasse(1)
+        
+
+
 
 if __name__ == "__main__":
-    gui = GUI()
+    #guiKasse = GuiKasse()
+    Login()
