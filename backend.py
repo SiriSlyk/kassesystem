@@ -2,7 +2,7 @@ from artikler import artikler
 
 #artikkler = {"70-8000": ["Bærepose S", 1.00, 999], "70-8001": ["Bærepose M", 2.00, 999], "70-101": ["Bærepose L", 3.00, 999]}
 
-class Database:  # Midlertidlig får testning
+class Database1:  # Midlertidlig får testning
     def __init__(self):
         self.artikler = artikler #{"70-8000": ["Bærepose S", 1.00, 999], "70-8001": ["Bærepose M", 2.00, 999], "70-101": ["Bærepose L", 3.00, 999]}
 

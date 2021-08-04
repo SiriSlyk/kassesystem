@@ -29,16 +29,19 @@ class Database:
         self.cursor.execute(insertCommand, tuple)
         self.db.commit()
 
-    def searchInRecords(self, keyword):
+    def searchInRecords(self, keywords, fields="*"):
         liste = []
         #print("Keyword: " + keyword)
         for field in self.tableFields:
-            
-            command = f"SELECT * FROM articles WHERE {field}=%s"
-            self.cursor.execute(command, (keyword,))
-            for x in self.cursor:
-                liste.append(x)
-        print(liste)
+            for keyword in keywords:
+                command = f"SELECT {fields} FROM articles WHERE {field}=%s"
+                self.cursor.execute(command, (keyword,))
+                for x in self.cursor:
+                    liste.append(x)
+        if len(liste) == 0:
+            return None
+        #print(liste)
+        return liste
 
     
 
@@ -51,11 +54,13 @@ class Database:
     
     
     def printAllRows(self):
-        
+        liste = []
         printCommand = "SELECT * FROM articles"
         self.cursor.execute(printCommand)
         for line in self.cursor:
             print(line)
+            liste.append(line)
+        return liste
 
 
 

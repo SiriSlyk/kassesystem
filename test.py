@@ -27,7 +27,8 @@ class GuiKasse:
 
         self.HEIGHT = self.hovedvindu.winfo_screenwidth()
         self.antallLinjer = 0
-        self.treeviewID = 0
+
+        self.i = -1 #SKAL SLETTES
 
         # Frames
         self.showItemsFrame = tkinter.Frame(self.hovedvindu)
@@ -45,8 +46,6 @@ class GuiKasse:
         self.keysFrame = tkinter.Frame(self.hovedvindu)
         self.keysFrame.grid(column=0, row=2)
 
-        self.display_treeview = ttk.Treeview(self.showItemsFrame, selectmode=tkinter.BROWSE, show="tree", column=('artikelNr', 'article', 'price'))
-
         self.state = 0
         self.artiklerIKurv = []
 
@@ -55,7 +54,6 @@ class GuiKasse:
 
         #EVENTS
         self.hovedvindu.bind('<Return>', self.enterKEY_Funk)
-        self.display_treeview.bind('<Button-1>', self.selectFromTree_func)
 
 
 
@@ -77,8 +75,8 @@ class GuiKasse:
     def treeview(self):
         style = ttk.Style()
         style.configure("Treeview", font=("Arial", 14), rowheight=25)
-        
-        #self.display_treeview = ttk.Treeview(self.showItemsFrame, selectmode=tkinter.BROWSE, show="tree", column=('artikelNr', 'article', 'price'))
+        #self.display_treeview = ttk.Treeview(self.hovedvindu, show="tree", selectmode=tkinter.NONE, column=('artikelNr', 'article', 'price'))
+        self.display_treeview = ttk.Treeview(self.showItemsFrame, show="tree", column=('artikelNr', 'article', 'price'))
         self.display_treeview.heading('#1', text="artikelNr", anchor=tkinter.CENTER)
         self.display_treeview.heading('#2', text="article", anchor=tkinter.CENTER)
         self.display_treeview.heading('#3', text="price", anchor=tkinter.CENTER)
@@ -94,16 +92,6 @@ class GuiKasse:
         
         self.display_treeview.grid(column=0, row=0)
 
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
         self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
         self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
 
@@ -325,36 +313,10 @@ class GuiKasse:
             price += db.returnPrice(item)
         self.sumStringvar.set(f"Sum {price}kr")
 
-    def selectFromTree_func1(self):
-        #print(len(self.display_treeview.selection()))
-        self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
-        self.display_treeview.focus(self.treeviewID)
-        self.display_treeview.selection_set(self.treeviewID)
-        print(self.treeviewID)
-        self.treeviewID = 1
-        self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
-        self.display_treeview.focus(self.treeviewID)
-        self.display_treeview.selection_set(self.treeviewID)
-        print(self.treeviewID)
-        self.treeviewID = 0
-        self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
-        self.display_treeview.focus(self.treeviewID)
-        self.display_treeview.selection_set("I010")
-        print(self.treeviewID)
+    def selectFromTree_func(self):
+        self.i += 1
+        self.display_treeview.selection()[self.i]
 
-    def selectFromTree_func(self, hendelse):
-        row_id = self.display_treeview.selection()[0]
-        selection = self.display_treeview.set(row_id)
-        # --> Selection = ["artikelNR", "Artikel", "Pris"]
-        for item in selection:
-            print(item)
-
-
-        
-
-        #print(self.treeviewID)
-        #self.display_treeview.selection_set(self.treeviewID)
-        #self.display_treeview.selection_set("I010")
 
 class Login: #INGEN LOGIKK MED BRUKENAVN OG PASSORD SKAL LAGE DATABASE!!!!!
     def __init__(self):

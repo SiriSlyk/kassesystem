@@ -1,5 +1,4 @@
 import tkinter
-from tkinter import ttk
 #from backend import *
 from database import *
 
@@ -27,14 +26,13 @@ class GuiKasse:
 
         self.HEIGHT = self.hovedvindu.winfo_screenwidth()
         self.antallLinjer = 0
-        self.treeviewID = 0
 
         # Frames
-        self.showItemsFrame = tkinter.Frame(self.hovedvindu)
+        self.showItemsFrame = tkinter.Frame(self.hovedvindu, background="#111")
         self.showItemsFrame.grid(column=0, row=0)
 
         self.angiFrame = tkinter.Frame(self.hovedvindu)
-        self.angiFrame.grid(column=0, row=1, sticky="W")
+        self.angiFrame.grid(column=0, row=1, sticky="n")
 
         self.funcFrame = tkinter.Frame(self.hovedvindu, background="#31B4D8")
         self.funcFrame.grid(column=1, row=0, rowspan=3)  # , sticky="e")
@@ -45,8 +43,6 @@ class GuiKasse:
         self.keysFrame = tkinter.Frame(self.hovedvindu)
         self.keysFrame.grid(column=0, row=2)
 
-        self.display_treeview = ttk.Treeview(self.showItemsFrame, selectmode=tkinter.BROWSE, show="tree", column=('artikelNr', 'article', 'price'))
-
         self.state = 0
         self.artiklerIKurv = []
 
@@ -55,16 +51,14 @@ class GuiKasse:
 
         #EVENTS
         self.hovedvindu.bind('<Return>', self.enterKEY_Funk)
-        self.display_treeview.bind('<Button-1>', self.selectFromTree_func)
 
 
 
 
         self.footerFrame = tkinter.Frame(self.hovedvindu, background="red")
-        self.footerFrame.grid(column=0, row=3, sticky="WE", columnspan=1)
+        self.footerFrame.grid(column=0, row=3, sticky="we", columnspan=2)
 
-        self.treeview()
-        #self.textfelt() #SKAL KANSKJE SLETTES
+        self.textfelt()
         self.angifelt()
         self.funcfelt()
         self.numfelt()
@@ -72,46 +66,7 @@ class GuiKasse:
 
         tkinter.mainloop()
 
-    
-
-    def treeview(self):
-        style = ttk.Style()
-        style.configure("Treeview", font=("Arial", 14), rowheight=25)
-        
-        #self.display_treeview = ttk.Treeview(self.showItemsFrame, selectmode=tkinter.BROWSE, show="tree", column=('artikelNr', 'article', 'price'))
-        self.display_treeview.heading('#1', text="artikelNr", anchor=tkinter.CENTER)
-        self.display_treeview.heading('#2', text="article", anchor=tkinter.CENTER)
-        self.display_treeview.heading('#3', text="price", anchor=tkinter.CENTER)
-
-        self.display_treeview.column('#0', minwidth=0, width=0)
-        self.display_treeview.column('#1', minwidth=0, width=150, anchor=tkinter.W)
-        self.display_treeview.column('#2', minwidth=0, width=250, anchor=tkinter.W)
-        self.display_treeview.column('#3', minwidth=0, width=160, anchor=tkinter.W)
-
-
-
-
-        
-        self.display_treeview.grid(column=0, row=0)
-
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-
-        self.scrollUP_button = tkinter.Button(self.showItemsFrame, text="^", command=self.selectFromTree_func).grid(column=1, row=0)
-        self.scrollDOWN_button = tkinter.Button(self.showItemsFrame, text="v", command=self.selectFromTree_func).grid(column=1, row=1)
-
-
-    def textfelt(self): #SKAL MEST SANSYNLIG SLETTES
+    def textfelt(self):
         self.artikkelStringvar = tkinter.StringVar()
         self.artikkelStringvar.set("")
         #self.text = tkinter.Text(self.showItemsFrame, height=15, pady=0)
@@ -132,10 +87,10 @@ class GuiKasse:
 
     def angifelt(self):
         self.label = tkinter.Label(self.angiFrame, text="Angi/skann artikkel:")
-        self.label.grid(column=0, row=0, sticky="NW", pady=0, padx=20)
+        self.label.grid(column=0, row=0, sticky="NW")
 
-        self.entry = tkinter.Entry(self.angiFrame, width=50, font=("Arial", 14))
-        self.entry.grid(column=0, row=1, sticky="NW", pady=0, padx=20)
+        self.entry = tkinter.Entry(self.angiFrame, width=100)
+        self.entry.grid(column=0, row=1)
 
     def funcfelt(self):
         x_margin = 10
@@ -265,17 +220,19 @@ class GuiKasse:
 
     def enterFunk(self):
         artikel = self.entry.get()
+        print(artikel)
         self.entry.delete(0, tkinter.END)
-
         artikelListe = db.searchInRecords(artikel)
-        
         #if artikkel != "":
-        if artikelListe:
-            
+        if artikel:
+            self.artikel_listbox.insert(tkinter.END, artikelListe[0])
+            #self.text.config(state=tkinter.NORMAL)
+            #infoFraDB = db.printToScreen(artikkel)
+            #self.artiklerIKurv.append(artikkel)
+            #self.text.insert(tkinter.END, infoFraDB+"\n")
 
-            
-            #self.artikel_listbox.insert(tkinter.END, artikelListe[0])
-
+            #self.text.config(state=tkinter.DISABLED)
+            #self.antallLinjer += 1
             if self.antallLinjer == 1:
                 self.artikkelStringvar.set(f"  {self.antallLinjer} artikel")
 
@@ -325,36 +282,7 @@ class GuiKasse:
             price += db.returnPrice(item)
         self.sumStringvar.set(f"Sum {price}kr")
 
-    def selectFromTree_func1(self):
-        #print(len(self.display_treeview.selection()))
-        self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
-        self.display_treeview.focus(self.treeviewID)
-        self.display_treeview.selection_set(self.treeviewID)
-        print(self.treeviewID)
-        self.treeviewID = 1
-        self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
-        self.display_treeview.focus(self.treeviewID)
-        self.display_treeview.selection_set(self.treeviewID)
-        print(self.treeviewID)
-        self.treeviewID = 0
-        self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
-        self.display_treeview.focus(self.treeviewID)
-        self.display_treeview.selection_set("I010")
-        print(self.treeviewID)
 
-    def selectFromTree_func(self, hendelse):
-        row_id = self.display_treeview.selection()[0]
-        selection = self.display_treeview.set(row_id)
-        # --> Selection = ["artikelNR", "Artikel", "Pris"]
-        for item in selection:
-            print(item)
-
-
-        
-
-        #print(self.treeviewID)
-        #self.display_treeview.selection_set(self.treeviewID)
-        #self.display_treeview.selection_set("I010")
 
 class Login: #INGEN LOGIKK MED BRUKENAVN OG PASSORD SKAL LAGE DATABASE!!!!!
     def __init__(self):
@@ -386,5 +314,4 @@ class Login: #INGEN LOGIKK MED BRUKENAVN OG PASSORD SKAL LAGE DATABASE!!!!!
 
 if __name__ == "__main__":
     #guiKasse = GuiKasse()
-    #Login()
-    GuiKasse(1)
+    Login()
