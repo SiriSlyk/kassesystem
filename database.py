@@ -2,6 +2,8 @@
 import mysql
 from mysql import connector
 from var import *
+import tkinter
+from tkinter import messagebox
 
 db = mysql.connector.connect(
     host='localhost',
@@ -29,6 +31,20 @@ class Database:
         self.cursor.execute(insertCommand, tuple)
         self.db.commit()
 
+    def searchInRecords_kassen(self, keyword):
+            print(f"keyword: {keyword}")
+        #try:
+            if "-" in keyword:
+                command = f"SELECT * FROM articles WHERE articleNR=%s LIMIT 1"
+            else:
+                command = f"SELECT * FROM articles WHERE barcode=%s LIMIT 1" 
+            self.cursor.execute(command, (keyword,))
+            for x in self.cursor:
+                print(x)
+                return x
+        #except:
+            pass
+    
     def searchInRecords(self, keywords, fields="*"):
         liste = []
         #print("Keyword: " + keyword)
@@ -41,12 +57,14 @@ class Database:
         if len(liste) == 0:
             return None
         #print(liste)
+        print("SUCCESS")
         return liste
 
     
 
     def commandToDatabase(self, command):
         self.cursor.execute(command)
+        self.db.commit()
         print("Command executed!")
 
     def deleteRecord(self, id):
@@ -68,8 +86,14 @@ class Database:
 
 if __name__ == '__main__':
     database = Database(db, cursor)
-    database.searchInRecords(("70-101"))
-
-
+    #print(database.searchInRecords(("5"), "id"))
+    #database.printAllRows()
+    #Q1 = f"SELECT * FROM articles WHERE id='70-8000'"
+    #database.commandToDatabase(Q1)
+    #print(database.searchInRecords_kassen("70-8001"))
+    #print(database.searchInRecords_kassen("70-8001"))
+    #print(database.searchInRecords_kassen("70-101"))
+    #database.searchInRecords_kassen("70-101")
+    print(database.printAllRows())
     
     

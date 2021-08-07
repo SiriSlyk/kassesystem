@@ -26,40 +26,50 @@ class GuiKasse:
         self.hovedvindu.geometry("")
 
         self.HEIGHT = self.hovedvindu.winfo_screenwidth()
-        self.antallLinjer = 0
 
-        self.i = -1 #SKAL SLETTES
 
-        # Frames
+        
+
+    # Frames
+
+        #Widgets
         self.showItemsFrame = tkinter.Frame(self.hovedvindu)
-        self.showItemsFrame.grid(column=0, row=0)
-
+        self.sumcountinfoFrame = tkinter.Frame(self.hovedvindu, background="#111")#, height=2)#, width=10, height=10)
         self.angiFrame = tkinter.Frame(self.hovedvindu)
-        self.angiFrame.grid(column=0, row=1, sticky="W")
-
+        self.scrollFrame = tkinter.Frame(self.hovedvindu, background="red")
         self.funcFrame = tkinter.Frame(self.hovedvindu, background="#31B4D8")
-        self.funcFrame.grid(column=1, row=0, rowspan=3)  # , sticky="e")
-
         self.keysFrame = tkinter.Frame(self.hovedvindu)
-        self.keysFrame.grid(column=0, row=2)
-
         self.footerFrame = tkinter.Frame(self.hovedvindu, background="red")
-        self.footerFrame.grid(column=0, row=3, sticky="WE", columnspan=1)
+        #Placement
 
-        # Variabler
+        self.showItemsFrame.grid(column=0, row=0)
+        self.sumcountinfoFrame.grid(column=0, row=1, sticky="NWE", ipady=2, pady=2)
+        self.angiFrame.grid(column=0, row=2, sticky="W")
+        self.scrollFrame.grid(column=1, row=0)
+        self.funcFrame.grid(column=2, row=0, rowspan=3)  # , sticky="e")
+
+        self.keysFrame.grid(column=0, row=3)
+        self.footerFrame.grid(column=0, row=4, sticky="WE", columnspan=1)
+
+        #Widget TREEVIEW
+        self.display_treeview = ttk.Treeview(self.showItemsFrame, selectmode=tkinter.BROWSE, show="tree", column=('artikelNr', 'article', 'price'), height=10)
+
+        #Variabler
         self.state = 0
         self.artiklerIKurv = []
+        self.antallLinjer = 0
+        self.treeviewID = 0
 
-
-        #Stringvars
+        #Stringvar
         self.sumStringvar = tkinter.StringVar()
         self.sumStringvar.set("")
 
-        self.artikkelStringvar = tkinter.StringVar()
-        self.artikkelStringvar.set("")
+        self.antallArtikler_stringvar = tkinter.StringVar()
+        self.antallArtikler_stringvar.set("")
 
         #EVENTS
         self.hovedvindu.bind('<Return>', self.enterKEY_Funk)
+        self.display_treeview.bind('<Button-1>', self.selectFromTree_func)
 
         #Bulding the GUI:    
         self.treeview()
@@ -71,12 +81,12 @@ class GuiKasse:
         #MAINLOOP
         tkinter.mainloop()
 
-    
+    #Building functions
 
     def treeview(self):
         style = ttk.Style()
-        style.configure("Treeview", font=("Arial", 14), rowheight=25)
-        self.display_treeview = ttk.Treeview(self.showItemsFrame, show="tree", column=('artikelNr', 'article', 'price'))
+        style.configure("Treeview", font=("Arial", 14), rowheight=25, hight=10)
+        #self.display_treeview = ttk.Treeview(self.showItemsFrame, show="tree", column=('artikelNr', 'article', 'price'))
         self.display_treeview.heading('#1', text="artikelNr", anchor=tkinter.CENTER)
         self.display_treeview.heading('#2', text="article", anchor=tkinter.CENTER)
         self.display_treeview.heading('#3', text="price", anchor=tkinter.CENTER)
@@ -86,16 +96,25 @@ class GuiKasse:
         self.display_treeview.column('#2', minwidth=0, width=250, anchor=tkinter.W)
         self.display_treeview.column('#3', minwidth=0, width=160, anchor=tkinter.W)
 
-        self.display_treeview.grid(column=0, row=0)
+        self.display_treeview.grid(column=0, row=0, sticky="NW", pady=(15, 0), padx=(10, 0))
 
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
-        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose S', '1.00'))
+        self.display_treeview.insert("", "end", value=('70-8001', 'Bærepose M', '2.00'))
+        self.display_treeview.insert("", "end", value=('70-8000', 'Bærepose S', '1.00'))
 
-        self.scrollUP_button = tkinter.Button(self.showItemsFrame, text="^", command=self.selectFromTree_func).grid(column=1, row=0)
-        self.scrollDOWN_button = tkinter.Button(self.showItemsFrame, text="v", command=self.selectFromTree_func).grid(column=1, row=1)
+        self.antallArtikler = tkinter.Label(self.showItemsFrame, textvariable=self.antallArtikler_stringvar, fg="#fff", bg="#111")
+        self.antallArtikler.grid(column=0, row=0, sticky="NE")
 
         self.sumLabel = tkinter.Label(self.showItemsFrame, textvariable=self.sumStringvar, fg="#fff", bg="#111")
-        self.sumLabel.grid(column=0, row=1, sticky="NWE")
+        self.sumLabel.grid(column=1, row=0, sticky="N")
+
+        
+        #self.scroll_canvas = tkinter.Canvas(self.scrollFrame, background="#111", width=10)
+        #self.scroll_canvas.grid(column=0, row=0)
+        
+        #self.scroll_canvas.create_oval(2, 2, 2, 2)
+
+        #self.scrollUP_button = tkinter.Button(self.scrollFrame, text="^", command=self.selectFromTree_func).grid(column=0, row=0, pady=5, padx=(0, 10))
+        #self.scrollDOWN_button = tkinter.Button(self.scrollFrame, text="v", command=self.selectFromTree_func).grid(column=0, row=1,  pady=2)
 
     def angifelt(self):
         #Widgets:
@@ -105,6 +124,7 @@ class GuiKasse:
         #Placement
         self.label.grid(column=0, row=0, sticky="NW", pady=0, padx=20)
         self.entry.grid(column=0, row=1, sticky="NW", pady=0, padx=20)
+
 
     def funcfelt(self):
         x_margin = 10
@@ -222,6 +242,7 @@ class GuiKasse:
         self.sumButton.grid(column=4, row=0, columnspan=1, ipadx=rectangle_padding, ipady=rectangle_padding, padx=tupple_x_margin, pady=y_margin)
         self.enterButton.grid(column=4, row=2, columnspan=1, ipadx=rectangle_padding, ipady=rectangle_padding, padx=tupple_x_margin, pady=y_margin)
 
+
     def footer(self):
         self.labelTime = tkinter.Label(self.footerFrame, text="Dette er en test")
         self.exitButton = tkinter.Button(self.footerFrame, text="Exit fullscreen", command=self.exitFullscreen)
@@ -230,7 +251,7 @@ class GuiKasse:
         self.labelTime.grid(column=0, row=0)
         self.exitButton.grid(column=1, row=0)
 
-    # FUNKSJONER
+    # Functions
     def exitFullscreen(self):
         #self.hovedvindu.attributes('-fullscreen', False)  # FULLSCREEN OFF
         self.hovedvindu.destroy()
@@ -244,18 +265,21 @@ class GuiKasse:
     def enterFunk(self):
         artikel = self.entry.get()
         self.entry.delete(0, tkinter.END)
+        print(artikel)
 
         artikelListe = db.searchInRecords(artikel)
-        
-        #if artikkel != "":
+        print(artikelListe)
         if artikelListe:
-            #self.artikel_listbox.insert(tkinter.END, artikelListe[0])
 
-            if self.antallLinjer == 1:
-                self.artikkelStringvar.set(f"  {self.antallLinjer} artikel")
-
+            for item in artikelListe:
+                itemTuple = (item[1], item[3], item[4])
+                self.display_treeview.insert("", "end", value=itemTuple)
+            treeListLen = len(self.display_treeview.get_children())
+            if treeListLen > 1:
+                textTil_antallArtikler_stringvar = "artikler"
             else:
-                self.artikkelStringvar.set(f"  {self.antallLinjer} artikler")
+                textTil_antallArtikler_stringvar = "artikel"
+            self.antallArtikler_stringvar.set(f"{treeListLen} {textTil_antallArtikler_stringvar}")
 
 
     def slett(self):
@@ -300,10 +324,41 @@ class GuiKasse:
             price += db.returnPrice(item)
         self.sumStringvar.set(f"Sum {price}kr")
 
-    def selectFromTree_func(self):
-        self.i += 1
-        self.display_treeview.selection()[self.i]
+    def selectFromTree_func1(self):
+        #print(len(self.display_treeview.selection()))
+        try:
+            self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
+            self.display_treeview.focus(self.treeviewID)
+            self.display_treeview.selection_set(self.treeviewID)
+            print(self.treeviewID)
+            self.treeviewID = 1
+            self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
+            self.display_treeview.focus(self.treeviewID)
+            self.display_treeview.selection_set(self.treeviewID)
+            print(self.treeviewID)
+            self.treeviewID = 0
+            self.treeviewID = self.display_treeview.get_children()[self.treeviewID]
+            self.display_treeview.focus(self.treeviewID)
+            self.display_treeview.selection_set("I010")
+            print(self.treeviewID)
+        except IndexError:
+            pass
 
+
+
+    def selectFromTree_func(self, hendelse):
+        row_id = self.display_treeview.selection()[0]
+        selection = self.display_treeview.set(row_id)
+        # --> Selection = ["artikelNR", "Artikel", "Pris"]
+        for item in selection:
+            print(item)
+
+
+        
+
+        #print(self.treeviewID)
+        #self.display_treeview.selection_set(self.treeviewID)
+        #self.display_treeview.selection_set("I010")
 
 class Login: #INGEN LOGIKK MED BRUKENAVN OG PASSORD SKAL LAGE DATABASE!!!!!
     def __init__(self):

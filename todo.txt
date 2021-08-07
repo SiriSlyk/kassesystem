@@ -1,0 +1,25 @@
+BETALING
+
+    CARD TERMINAL (PCI)
+    ---- ---- ---- ----
+        GUI:
+            -Grafical look
+
+        DATABASE:
+            -Fields: id, first name, last name, visa/mastercard, cardnumber, balance, pincode (hashe)
+
+
+    CASH
+    ---- ---- ---- ----
+        GUI:
+            -None?
+        
+    LOGGING TRANSATIONS:
+        
+        DATABASE:
+            -Fields: id, date, day, quanitities of transations, 
+
+            -Relastion database (recipts):
+                -> quanitities of transations -> every transations discribed with every item?
+
+    

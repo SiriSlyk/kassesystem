@@ -1,3 +1,7 @@
+from kortTerminal import *
+
+#kortbetaling = KortBetaling()
+
 
 # Creating TABLE "articles" with columns: id, articleNR, barcode, article, price
 
