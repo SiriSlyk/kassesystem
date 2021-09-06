@@ -1,4 +1,4 @@
-from kortTerminal import *
+#from kortTerminal import *
 
 #kortbetaling = KortBetaling()
 

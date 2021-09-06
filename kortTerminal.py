@@ -1,23 +1,24 @@
 import tkinter
 
-class KortBetaling1:
-    def __init__(self):
-        
-        self.vindu = tkinter.Tk()
-        self.vindu.title("PCI- terminal")
+class KortBetaling:
+    def __init__(self, hovedvindu):
+
+
+        self.betalingsVindu = tkinter.Toplevel(hovedvindu)
+        self.betalingsVindu.title("PCI- terminal")
 
         
 
-        self.display_Frame = tkinter.Frame(self.vindu)
+        self.display_Frame = tkinter.Frame(self.betalingsVindu)
         self.display_Frame.grid(column=0, row=1)
 
-        self.buttons_Frame = tkinter.Frame(self.vindu)
+        self.buttons_Frame = tkinter.Frame(self.betalingsVindu)
         self.buttons_Frame.grid(column=0, row=2)
 
         
         self.fonten = ("Arial", 14)
 
-        self.title_Label = tkinter.Label(self.vindu, text="Bankterminal", font=self.fonten)
+        self.title_Label = tkinter.Label(self.betalingsVindu, text="Bankterminal", font=self.fonten)
         self.title_Label.grid(column=0, row=0)
 
     #DISPLAY FRAME:

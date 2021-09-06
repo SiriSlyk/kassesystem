@@ -2,6 +2,7 @@ import tkinter
 from tkinter import ttk
 #from backend import *
 from database import *
+from kortTerminal import *
 
 items = ["Ienhet", "Dndpfsd", "Nflpwnf"]
 db = Database()
@@ -46,7 +47,7 @@ class GuiKasse:
         self.keysFrame.grid(column=0, row=2)
 
         self.footerFrame = tkinter.Frame(self.hovedvindu, background="red")
-        self.footerFrame.grid(column=0, row=3, sticky="WE", columnspan=3)
+        self.footerFrame.grid(column=0, row=3, sticky="WE", columnspan=4)
 
 
         #Widget TREEVIEW
@@ -254,9 +255,13 @@ class GuiKasse:
 
         self.scrollUP_button = tkinter.Button(self.footerFrame, text="UP", command=self.scrollUP).grid(column=2, row=0)
         
+        self.openPCI_Button = tkinter.Button(self.footerFrame, text="Kort", command=self.openPCI_Func)
+
         #Position
         self.labelTime.grid(column=0, row=0)
         self.exitButton.grid(column=1, row=0)
+
+        self.openPCI_Button.grid(column=3, row=0)
 
     # Functions
     def exitFullscreen(self):
@@ -271,23 +276,26 @@ class GuiKasse:
 
     def enterFunk(self):
         artikel = self.entry.get()
-        self.entry.delete(0, tkinter.END)
-        print(artikel)
+        try:
+            self.entry.delete(0, tkinter.END)
+            print(artikel)
 
-        artikel = db.searchInRecords_kassen(artikel)
-        print(f"artikel: {artikel}")
-        print(type(artikel[4]))
-        if artikel:
-            itemTuple = (artikel[1], artikel[3], f"{artikel[4]}kr")
-            self.artiklerIKurv.append(artikel[4])
-            self.display_treeview.insert("", "end", value=itemTuple)
-            self.treeListe = self.display_treeview.get_children()
-            self.treeListLen = len(self.treeListe)
-            if self.treeListLen > 1:
-                textTil_antallArtikler_stringvar = "artikler"
-            else:
-                textTil_antallArtikler_stringvar = "artikel"
-            self.antallArtikler_stringvar.set(f"{self.treeListLen} {textTil_antallArtikler_stringvar}")
+            artikel = db.searchInRecords_kassen(artikel)
+            print(f"artikel: {artikel}")
+            print(type(artikel[4]))
+            if artikel:
+                itemTuple = (artikel[1], artikel[3], f"{artikel[4]}kr")
+                self.artiklerIKurv.append(artikel[4])
+                self.display_treeview.insert("", "end", value=itemTuple)
+                self.treeListe = self.display_treeview.get_children()
+                self.treeListLen = len(self.treeListe)
+                if self.treeListLen > 1:
+                    textTil_antallArtikler_stringvar = "artikler"
+                else:
+                    textTil_antallArtikler_stringvar = "artikel"
+                self.antallArtikler_stringvar.set(f"{self.treeListLen} {textTil_antallArtikler_stringvar}")
+        except TypeError:
+            pass
 
 
     def slett(self):
@@ -394,6 +402,10 @@ class GuiKasse:
         #print(self.treeviewID)
         #self.display_treeview.selection_set(self.treeviewID)
         #self.display_treeview.selection_set("I010")
+
+    def openPCI_Func(self):
+        KortBetaling(self.hovedvindu)
+
 
 class Login: #INGEN LOGIKK MED BRUKENAVN OG PASSORD SKAL LAGE DATABASE!!!!!
     def __init__(self):
